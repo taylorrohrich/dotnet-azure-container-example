@@ -1,10 +1,10 @@
-# Authenticating to Azure Services in a .Net Core Container
+# Authenticating to Azure Services in a .NET Core Container
 
 ## Quick start
 
 Run the `Docker .NET Core Launch (Development)` Configuration via Visual Studio Code.
 
-## Setting up local development with .Net Core Container communicating with Azure
+## Setting up local development with .NET Core Container communicating with Azure
 
 Azure pairs well with local development of .NET apps via Visual Studio and Visual Studio Code,
 however containers introduce several wrinkles. Utilizng Azure resources in local development depends
