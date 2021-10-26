@@ -1,0 +1,84 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/webapi.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: development",
+            "dependsOn": [
+                "build"
+            ],
+            "dockerBuild": {
+                "tag": "webapi:development",
+                "target": "development",
+                "dockerfile": "${workspaceFolder}/Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/webapi.csproj"
+            }
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: production",
+            "dependsOn": [
+                "build"
+            ],
+            "dockerBuild": {
+                "tag": "webapi:production",
+                "target": "production",
+                "dockerfile": "${workspaceFolder}/Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/webapi.csproj"
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: development",
+            "dependsOn": [
+                "docker-build: development"
+            ],
+            "dockerRun": {
+                "containerName":"webapi-development",
+                "ports": [{"containerPort": 5000,"hostPort": 5000}],
+                "image": "webapi:development",
+                "volumes": [{"localPath": "${env:HOME}/.azure", "containerPath": "/root/.azure","permissions": "rw"}]
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/webapi.csproj",
+                "enableDebugging": true
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: production",
+            "dependsOn": [
+                "docker-build: production"
+            ],
+            "dockerRun": {
+                "containerName":"webapi-production",
+                "ports": [{"containerPort": 5000,"hostPort": 5000}],
+                "image": "webapi:production",
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/webapi.csproj",
+                "enableDebugging": false
+            }
+        }
+    ]
+}
